@@ -1,8 +1,14 @@
+/*
+浮動小数点をすごく丁寧に解説している
+https://qiita.com/y-yoshinari/items/76260f6359d5b4418b33
+*/
 #include<iostream>
+#include<format>
 using namespace std;
 class FLOAT
 {
 public:
+	//Data
 	union
 	{
 		float f;
@@ -42,8 +48,10 @@ public:
 		};
 	};
 	unsigned char bits[32];
-
-	FLOAT(float f):f(f){
+	
+	//Functions
+	FLOAT(float f):f(f)
+	{
 		bits[0] = b31;
 		bits[1] = b30;
 		bits[2] = b29;
@@ -77,22 +85,93 @@ public:
 		bits[30] = b01;
 		bits[31] = b00;
 	}
-	void dispFloat()
+	void dispFloat() const
 	{
-		printf("%f\n", f);
+		cout << ("１０進小数\n");
+		cout << fixed << f << endl;
 	}
-	void dispBin()
+	void dispBin() const
 	{
 		//２進数表示
+		cout << "メモリ上のデータをそのまま表示\n";
 		for (int i = 0; i < 32; i++) {
-			printf("%u", bits[i]);
-			if (i == 0 || i == 8)printf(" ");
+			cout << (unsigned)bits[i];
+			//符号部、指数部、仮数部の区切りスペース
+			if (i == 0 || i == 8)cout << ' ';
 		}
-		printf("\n");
+		cout << endl;
 	}
-	void dispDec()
+	void toBin() const
 	{
-		printf("10進に変換\n");
+		//整数の開始指数
+		int startN = 0;
+		if (f < pow(2, 4))startN = 3;
+		else if (f < pow(2, 8))startN = 7;
+		else if (f < pow(2, 16))startN = 15;
+		else if (f < pow(2, 24))startN = 23;
+		else startN = 31;
+
+		//普通に２進数に変換して表示
+		cout << ("２進小数(絶対値)\n");
+		float flt = fabsf(f);
+		for (float n = startN; n >= -48; n--) {
+			float pw = powf(2, n);
+			int bit = int(flt / pw);
+			flt = flt - bit * pw;
+			std::cout << bit;
+			if (n == 0) {
+				std::cout << '.';
+			}
+		}
+		cout << endl << endl;
+
+		//IEEE754規格の単精度浮動小数点
+		flt = fabsf(f);
+		bool first = false;
+		int expornent = 0;
+		char mantissa[23 + 1]{ "00000000000000000000000" };
+		int i = 0;//mantissa配列のインデックス
+		//符号部
+		int sign = f < 0 ? 1 : 0;
+		//仮数部
+		for (float n = startN; n >= -48; n--) {
+			float pw = powf(2, n);
+			int bit = int(flt / pw);
+			//余りを求めておく
+			flt = flt - bit * pw;
+			//はじめてbitが１になった
+			if (!first && bit == 1) {
+				first = true;
+				//指数部：小数点をずらす桁数
+				expornent = int(n);
+			}
+			//１が出てきた次のループからmantissa配列に'1'or'0'を並べていく
+			else if (first) {
+				mantissa[i] = bit + '0';
+				i++;
+				if (i == 23) {
+					break;
+				}
+			}
+		}
+
+		std::cout << "IEEE754規格の単精度浮動小数点\n";
+		std::cout << "符号部：" << sign << " (" << (sign ? "マイナス" : "プラス") << "を表す)\n";
+		std::cout << "指数部：" << expornent << "+127=" << expornent + 127;
+		std::cout << " (最左の1の次まで小数点を" << expornent << "桁移動する。127を足すと指数部。)\n";
+		std::cout << "仮数部：移動した小数点より右側の23ビット\n";
+
+		//符号部
+		std::cout << sign << ' ';
+		//指数部：ずらす桁数に127を足した値
+		std::cout << format("{:08b} ", f == 0.0f ? 0 : expornent + 127);
+		//仮数部
+		std::cout << mantissa << endl << endl;
+	}
+
+	void toDec() const
+	{
+		printf("\n10進に戻してみる\n");
 		//符号
 		int s = bits[0];
 		//指数部⇒１０進数
@@ -112,95 +191,21 @@ public:
 			1 + m / pow(2, 23), //仮数部
 			pow(-1, s) * pow(2, e - 127) * (1 + m / pow(2, 23))
 		);
+
+		//cout << pow(-1, s) << " * ";//符号
+		//cout << fixed << pow(2, e - 127) << " * "; //指数部
+		//cout << fixed << 1 + m / pow(2, 23) << " = "; //仮数部
+		//cout << fixed << pow(-1, s) * pow(2, e - 127) * (1 + m / pow(2, 23));
 	}
 };
 
-void toBin(float f)
-{
-	//引数ｆの整数部が-32768～32767であること！
-	if (int(f) < -32768 || int(f) > 32767) {
-		printf("範囲外の引数\n");
-		return;
-	}
-
-	printf("%f\n",f);
-
-	//符号
-	int sign = f < 0 ? 1 : 0;
-	printf("%s\n", (sign ? "minus" : "plus"));
-
-	//配列ｃに、整数部と小数部を分けて、2進数化した数を並べていきます。
-	const int n1 = 16;//整数部の桁数
-	const int n2 = 64;//小数部の桁数
-	char c[n1 + n2]{};
-	//整数部２進数配列化
-	f = fabsf(f);//絶対値化して
-	int Int = int(f);//整数部を取り出す
-	for (int i = n1-1; i >= 0; i--) {
-		c[i] = Int % 2;
-		Int /= 2;
-	}
-	//小数部２進数配列化
-	f -= int(f);//小数点以下を取り出す
-	for (int i = n1; i < (n1 + n2); i++) {
-		f *= 2;
-		c[i] = int(f);
-		if (int(f) == 1) {
-			f -= 1.0f;
-		}
-	}
-
-	//整数部表示
-	for (int i = 0; i < n1; i++) {
-		printf("%d",c[i]);
-	}
-	//小数部表示
-	printf(".");
-	for (int i = n1; i < (n1 + n2); i++) {
-		printf("%d", c[i]);
-	}
-	printf("\n");
-
-	//何桁浮動するか求める
-	int shift = 0;
-	int disp = 0;
-	for (int i = 0; i < n1 + n2; i++) {
-		if (c[i] == 1) {
-			shift = n1 - 1 - i;
-			disp = i + 1;
-			break;
-		}
-	}
-	cout << shift << "桁浮動する\n";
-	//指数部の２進配列化
-	shift += 127;
-	char e[8 + 1]{};
-	for (int i = 7; i >= 0; i--) {
-		e[i] = shift % 2;
-		shift /= 2;
-	}
-
-	//floatビット表示
-	printf("%d ", sign);
-	for (int i = 0; i < 8; i++) {
-		printf("%d", e[i]);
-	}
-	printf(" ");
-	for (int i = disp; i < disp+23; i++) {
-		printf("%d", c[i]);
-	}
-	printf("\n");
-}
-
 int main()
 {
-	FLOAT f { 0.125f };
+	FLOAT f = -0.425f;
 	f.dispFloat();
+	f.toBin();
 	f.dispBin();
-	//f.dispDec();
-
-	cout << endl;
-	toBin(f.f);
+	f.toDec();
 
 	system("pause>0");
 }
