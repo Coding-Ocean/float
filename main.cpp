@@ -1,3 +1,5 @@
+#include<process.h>
+#include"floatFunctions.h"
 int main()
 {
 	float f = sqrtf(-1.0f);
