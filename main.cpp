@@ -2,16 +2,11 @@
 #include"floatFunctions.h"
 int main()
 {
-	float f = 3.125f;
+	float f = 0.0f;
 
 	dispFloat(f);
 
-	dispBin(f);
-
-	dispNormalized(f);
-
 	dispBinIEEE754(f);
-	explanation(f);
 
 	system("pause>0");
 }
