@@ -4,7 +4,6 @@ https://qiita.com/y-yoshinari/items/76260f6359d5b4418b33
 */
 #include<iostream>
 #include<format>
-#include<limits>
 using namespace std;
 
 void dispFloat(float f)
@@ -23,7 +22,7 @@ void dispBin(float f)
 	//符号表示
 	cout << (f < 0 ? "-" : "");
 
-	//開始指数の決定
+	//桁の重みの開始指数の決定
 	float flt = fabsf(f);
 	float startE = 0;
 	if		(flt < pow(2,  1))startE =  0;
@@ -33,7 +32,7 @@ void dispBin(float f)
 	else if (flt < pow(2, 16))startE = 15;
 	else if (flt < pow(2, 24))startE = 23;
 	else if (flt < pow(2, 32))startE = 31;
-	//普通に２進数に変換して表示
+	//普通に２進数に変換しながら1bitずつ表示
 	for (float e = startE; e >= -48; e--) {
 		float weight = powf(2, e);//桁の重み
 		int bit = int(flt / weight);
@@ -51,7 +50,7 @@ void dispBin(float f)
 void dispBinIEEE754(float f)
 {
 	cout << "[IEEE754_浮動小数点]\n";
-	//ビットのならびをuに変換
+	//ビットのならびをunsigned uに変換
 	unsigned u = *reinterpret_cast<unsigned*>(&f);
 	//符号部・指数部・仮数部、区切って表示
 	for (int n = 31; n >= 0; n--) {
@@ -64,8 +63,8 @@ void dispBinIEEE754(float f)
 }
 int exponent(float f)
 {
-	//ビットのならびをuに変換
-	uint32_t u = *reinterpret_cast<uint32_t*>(&f);
+	//ビットのならびをunsigned uに変換
+	unsigned u = *reinterpret_cast<unsigned*>(&f);
 	//31ビット(符号部)を０にする
 	u &= ~(1 << 31);
 	//指数部だけ
@@ -76,8 +75,8 @@ int exponent(float f)
 void dispNormalized(float f)
 {
 	cout << "[1.xxx・・・の形に変形]" << endl;
-	//ビットのならびをuに変換
-	uint32_t u = *reinterpret_cast<uint32_t*>(&f);
+	//ビットのならびをunsigned uに変換
+	unsigned u = *reinterpret_cast<unsigned*>(&f);
 	//正規化した値を表示
 	cout << "1.";
 	for (int n = 22; n >= 0; n--) {
@@ -92,7 +91,8 @@ void explanation(float f)
 	int e = exponent(f);
 	//説明
 	cout << " " << "    ↑         　　↑" << endl;
-	cout << " " << format("{:4}", e) << "+127   " << "小数点を" << e << "ずらした小数部分";
+	cout << " " << format("{:4}{:<7}", e, "+127");
+	cout << "小数点を" << e << "ずらした小数部分";
 }
 int main()
 {
