@@ -96,7 +96,7 @@ void explanation(float f)
 
 int main()
 {
-	float f = powf(10, 1000000);
+	float f = pow(10, 1000000);
 
 	dispFloat(f);
 
