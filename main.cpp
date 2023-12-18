@@ -2,7 +2,7 @@
 #include"floatFunctions.h"
 int main()
 {
-	float f = 3.125f;
+	float f = sqrtf(-1.0f);
 
 	dispFloat(f);
 
