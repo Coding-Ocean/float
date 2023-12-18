@@ -9,7 +9,7 @@ using namespace std;
 void dispFloat(float f)
 {
 	cout << "[10i¬”]\n";
-	cout << format("{:g}", f) << endl << endl;
+	cout << f << endl << endl;
 }
 void dispBin(float f)
 {
