@@ -94,20 +94,14 @@ void explanation(float f)
 	cout << " " << format("{:4}{:<7}", e, "+127");
 	cout << "¬”“_‚ð" << e << "‚¸‚ç‚µ‚½¬”•”•ª";
 }
+
 int main()
 {
-	//float f = pow(10, 1000000);
-	//float f = sqrtf(-1.0f);
-	float f = 0.125f;
-
+	float f = sqrtf(-1.0f);
+	
 	dispFloat(f);
 
-	dispBin(f);
-
-	dispNormalized(f);
-
 	dispBinIEEE754(f);
-	explanation(f);
 
 	system("pause>0");
 }
