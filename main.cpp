@@ -16,8 +16,7 @@ void dispBin(float f)
 	cout << ("[２進小数に変換]\n");
 
 	//エラー処理
-	if (isnan(f)) { cout << "nan" << endl << endl; return; }
-	if (isinf(f)) { cout << "inf" << endl << endl; return; }
+	if (isnan(f)||isinf(f)) { cout << f << endl << endl; return; }
 
 	//符号表示
 	cout << (f < 0 ? "-" : "");
@@ -94,20 +93,14 @@ void explanation(float f)
 	cout << " " << format("{:4}{:<7}", e, "+127");
 	cout << "小数点を" << e << "ずらした小数部分";
 }
+
 int main()
 {
-	//float f = pow(10, 1000000);
-	//float f = sqrtf(-1.0f);
-	float f = 0.125f;
+	float f = powf(10, 1000000);
 
 	dispFloat(f);
 
-	dispBin(f);
-
-	dispNormalized(f);
-
 	dispBinIEEE754(f);
-	explanation(f);
 
 	system("pause>0");
 }
