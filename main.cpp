@@ -1,17 +1,12 @@
-#include<process.h>
-#include"floatFunctions.h"
+#include<iostream>
+#include<print>
+using namespace std;
 int main()
 {
-	float f = 2.5f;
+	println("                  32109876543210987654321");
 
-	dispFloat(f);
-
-	dispBin(f);
-
-	dispNormalized(f);
-
-	dispBinIEEE754(f);
-	explanation(f);
-
+	unsigned u = pow(2, 24)+1;
+	println("{0:d}  {0:032b}", u);
+	
 	system("pause>0");
 }
