@@ -3,10 +3,11 @@
 using namespace std;
 int main()
 {
-	println("                  32109876543210987654321");
-
-	unsigned u = pow(2, 24)+1;
-	println("{0:d}  {0:032b}", u);
+	float f = pow(2, 24);
+	for (int i = 1; i < 10; i++) {
+		f += 1.0f;
+		println("{}", f);
+	}
 	
 	system("pause>0");
 }
