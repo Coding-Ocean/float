@@ -64,7 +64,15 @@ void dispNormalized(float f)
 	unsigned u = *reinterpret_cast<unsigned*>(&f);
 	//正規化した値を表示
 	cout << "1.";
-	cout << format("{:023b}", u & 0x007fffff);//仮数部
+	u &= 0x007fffff;
+	string b = format("{:023b}", u);
+	for (int i = 22; i >= 1; i--) {
+		if (b[i] == '0')
+			b[i] = '\0';
+		else
+			break;
+	}
+	cout << b;
 	cout << format(" * 2^{:}", exponent(f));
 	cout << endl << endl;
 }
@@ -89,5 +97,5 @@ void explanation(float f)
 	//説明
 	cout << " " << "    ↑         　　↑" << endl;
 	cout << " " << format("{:4}{:<7}", e, "+127");
-	cout << "小数点を" << e << "ずらした小数部分";
+	cout << "小数点を" << e << "ずらした小数部分" << endl;
 }
