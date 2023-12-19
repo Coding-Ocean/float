@@ -50,7 +50,7 @@ int exponent(float f)
 {
 	//ビットのならびをunsigned uに変換
 	unsigned u = *reinterpret_cast<unsigned*>(&f);
-	//31ビット(符号部)を０にする
+	//31番ビット(符号部)を０にする
 	u &= ~(1 << 31);
 	//指数部だけ
 	u >>= 23;
@@ -64,9 +64,7 @@ void dispNormalized(float f)
 	unsigned u = *reinterpret_cast<unsigned*>(&f);
 	//正規化した値を表示
 	cout << "1.";
-	for (int n = 22; n >= 0; n--) {
-		cout << (u >> n & 1);
-	}
+	cout << format("{:023b}", u & 0x007fffff);//仮数部
 	cout << format(" * 2^{:}", exponent(f));
 	cout << endl << endl;
 }
