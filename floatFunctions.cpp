@@ -21,18 +21,17 @@ void dispBin(float f)
 	//符号表示
 	cout << (f < 0 ? "-" : "");
 
-	//桁の重みの開始指数の決定
+	//桁の重みの開始指数'e'の決定
 	float flt = fabsf(f);
-	float startE = 0;
-	if (flt < pow(2, 1))startE = 0;
-	else if (flt < pow(2, 2))startE = 1;
-	else if (flt < pow(2, 4))startE = 3;
-	else if (flt < pow(2, 8))startE = 7;
-	else if (flt < pow(2, 16))startE = 15;
-	else if (flt < pow(2, 24))startE = 23;
-	else if (flt < pow(2, 32))startE = 31;
+	float e = 0;
+	for (int i = 1; i <= 32; i++) {
+		if (flt < pow(2, i)) {
+			e = i - 1;
+			break;
+		}
+	}
 	//普通に２進数に変換しながら1bitずつ表示
-	for (float e = startE; e >= -48; e--) {
+	while(e >= -48) {
 		float weight = powf(2, e);//桁の重み
 		int bit = int(flt / weight);
 		cout << bit;
@@ -43,6 +42,7 @@ void dispBin(float f)
 		if (e < 0 && flt == 0) {
 			break;
 		}
+		e--;
 	}
 	cout << endl << endl;
 }
