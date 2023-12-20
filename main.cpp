@@ -2,7 +2,7 @@
 #include"floatFunctions.h"
 int main()
 {
-	float f = 48.25f;
+	float f = 0.1f;
 
 	dispFloat(f);
 

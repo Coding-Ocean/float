@@ -1,6 +1,8 @@
 /*
-浮動小数点をすごく丁寧に解説している
+浮動小数点をすごく丁寧に解説しているページ
 https://qiita.com/y-yoshinari/items/76260f6359d5b4418b33
+つかわせて頂いた画像
+みんちりえ（ https://min-chi.material.jp/ ）
 */
 #include<iostream>
 #include<format>
@@ -26,7 +28,7 @@ void dispBin(float f)
 	float e = 0;
 	for (int i = 1; i <= 32; i++) {
 		if (flt < pow(2, i)) {
-			e = i - 1;
+			e = i - 1.0f;
 			break;
 		}
 	}
