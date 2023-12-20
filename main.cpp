@@ -3,10 +3,10 @@
 using namespace std;
 int main()
 {
-	println("                  32109876543210987654321");
-
+	println("unsigned type");
 	unsigned u = pow(2, 24)+1;
 	println("{0:d}  {0:032b}", u);
+	println("                  12345678901234567890123");
 	
 	system("pause>0");
 }
