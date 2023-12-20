@@ -99,5 +99,5 @@ void explanation(float f)
 	//説明
 	cout << " " << "    ↑         　　↑" << endl;
 	cout << " " << format("{:4}{:<7}", e, "+127");
-	cout << "小数点を" << e << "ずらした小数部分" << endl;
+	cout << "小数点を" << -e << "ずらした小数部分" << endl;
 }
