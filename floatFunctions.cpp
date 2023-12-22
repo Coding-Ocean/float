@@ -11,7 +11,7 @@ using namespace std;
 void dispFloat(float f)
 {
 	cout << "[10進小数]\n";
-	cout << f << endl << endl;
+	cout << fixed << f << endl << endl;
 }
 void dispBin(float f)
 {
@@ -26,7 +26,7 @@ void dispBin(float f)
 	//桁の重みの開始指数'e'の決定
 	float flt = fabsf(f);
 	float e = 0;
-	for (int i = 1; i <= 32; i++) {
+	for (int i = 1; i <= 128; i++) {
 		if (flt < pow(2, i)) {
 			e = i - 1.0f;
 			break;
@@ -61,6 +61,9 @@ int exponent(float f)
 }
 void dispNormalized(float f)
 {
+	//エラー処理
+	if (isnan(f) || isinf(f) || f==0) { return; }
+
 	cout << "[1.xxx・・・の形に変形]" << endl;
 	//ビットのならびをunsigned uに変換
 	unsigned u = *reinterpret_cast<unsigned*>(&f);
@@ -94,6 +97,9 @@ void dispBinIEEE754(float f)
 }
 void explanation(float f)
 {
+	//エラー処理
+	if (isnan(f) || isinf(f) || f == 0) { return; }
+
 	//何桁ずらすか
 	int e = exponent(f);
 	//説明
